@@ -1,13 +1,29 @@
-import express from "express";
+import express from 'express';
+import cors from 'cors';
 
 const app = express();
-const port = 3002;
+
+app.use(cors());
+
+const port = 5002;
+
+const dailyCount = {}; // Initialize an empty object to store daily counts
 
 app.get('/', (req, res) => {
-  const response_data = {
-    checked: "true"
+
+  const date = new Date().toISOString().slice(0, 10); // Get the current date (YYYY-MM-DD)
+  if (!dailyCount[date]) { // If the date is not in the object, add it with a count of 0
+    dailyCount[date] = 0;
   }
+  dailyCount[date]++; // Increment the count for the current date
+
+  const response_data = {
+    checked: "true",
+    count: dailyCount[date]
+  };
+
   res.send(response_data);
+
 });
 
 app.listen(port, () => {
